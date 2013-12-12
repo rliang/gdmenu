@@ -1,0 +1,10 @@
+#!/bin/sh
+
+$(echo $PATH | tr ':' '\n' | while read
+do
+	cd $REPLY
+	for i in *
+	do
+		[ -x $i ] && echo $i
+	done
+done | gdmenu -t 'Choose an Application' -m 10)
