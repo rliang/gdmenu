@@ -35,4 +35,5 @@ clean:
 install: ${EXEC}
 	install -Dm 755 ${EXEC} ${DESTDIR}${BINDIR}/${EXEC}
 	install -Dm 755 ${EXEC}_run ${DESTDIR}${BINDIR}/${EXEC}_run
+	install -Dm 755 ${EXEC}_history ${DESTDIR}${BINDIR}/${EXEC}_history
 
