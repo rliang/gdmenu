@@ -1,8 +1,8 @@
 #!/bin/sh
 
-$(echo $PATH | tr ':' '\n' | while read
+$(for p in $(echo $PATH | tr ':' ' ')
 do
-	cd $REPLY
+	cd $p
 	for i in *
 	do
 		[ -x $i ] && echo $i
