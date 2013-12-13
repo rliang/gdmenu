@@ -7,4 +7,4 @@ do
 	do
 		[ -x $i ] && echo $i
 	done
-done | gdmenu -t 'Choose an Application' -m 10)
+done | sort -u | gdmenu -t 'Choose an Application' -m 10)
