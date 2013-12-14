@@ -1,3 +1,3 @@
 #!/bin/sh
 
-$(cat ~/.cache/gdmenu_run | sort -u | gdmenu -t 'History' -m 10)
+$(cat ~/.cache/gdmenu_run | sort -u | gdmenu -t 'History' -m 10) &
