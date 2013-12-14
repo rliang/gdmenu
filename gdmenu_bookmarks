@@ -1,3 +1,3 @@
 #!/bin/sh
 
-$(gdmenu -t 'Bookmarks' < ~/.gdmenu_bookmarks) &
+exec $(gdmenu -t 'Bookmarks' < ~/.gdmenu_bookmarks)

@@ -1,10 +1,10 @@
 #!/bin/sh
 
-$(for p in $(echo $PATH | tr ':' ' ')
+exec $(for p in $(echo $PATH | tr ':' ' ')
 do
 	cd $p
 	for i in *
 	do
 		[ -x $i ] && echo $i
 	done
-done | gdmenu -t 'Choose an Application' -m 10 | tee -a ~/.cache/gdmenu_run) &
+done | gdmenu -t 'Choose an Application' -m 10 | tee -a ~/.cache/gdmenu_run)
