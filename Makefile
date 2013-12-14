@@ -1,6 +1,7 @@
 EXEC=gdmenu
 LIBS=gtk+-3.0 gmodule-2.0
 CFLAGS=-std=c99 -Os -Wall -Wextra -pedantic -s -pipe
+SCRIPTS=${EXEC}_run ${EXEC}_history ${EXEC}_bookmarks
 
 RES=$(wildcard *.ui)
 RESXML=resources.xml
@@ -9,6 +10,7 @@ RESSRC=$(RESXML:.xml=.c)
 
 SRCS=$(wildcard *.c)
 OBJS=$(SRCS:.c=.o)
+EXECS=${EXEC} ${SCRIPTS}
 
 CFLAGS+=`pkg-config --cflags ${LIBS}`
 LDFLAGS=`pkg-config --libs ${LIBS}`
@@ -21,7 +23,7 @@ BINDIR?=${PREFIX}/bin
 
 all: ${EXEC}
 
-${EXEC}: resources ${OBJS}
+${EXEC}: ${OBJS}
 	${CC} ${LDFLAGS} ${OBJS} -o $@
 
 resources: ${RESSRC}
@@ -32,8 +34,5 @@ ${RESSRC}: ${RES}
 clean:
 	rm ${RESSRC} ${OBJS} ${EXEC}
 
-install: ${EXEC}
-	install -Dm 755 ${EXEC} ${DESTDIR}${BINDIR}/${EXEC}
-	install -Dm 755 ${EXEC}_run ${DESTDIR}${BINDIR}/${EXEC}_run
-	install -Dm 755 ${EXEC}_history ${DESTDIR}${BINDIR}/${EXEC}_history
-
+install: ${EXECS}
+	$(foreach i, ${EXECS}, install -Dm 755 ${i} ${DESTDIR}${BINDIR}/${i};)
