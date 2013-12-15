@@ -149,25 +149,22 @@ void parse_options(int *argc, char **argv[])
 
 void build_interface(void)
 {
-	GtkWindow *w;
-	GtkBox *b;
-	GtkTreeView *t;
-
-	w = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
+	GtkWindow *w = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title(w, title);
 	gtk_window_set_gravity(w, GDK_GRAVITY_CENTER);
 	gtk_window_set_position(w, GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_type_hint(w, GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_icon_name(w, "dialog-question");
 
-	b = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
+	GtkBox *b = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
 
 	entry = GTK_ENTRY(gtk_entry_new());
 	gtk_widget_grab_focus(GTK_WIDGET(entry));
 
 	list_store = gtk_list_store_new(1, G_TYPE_STRING);
 
-	t = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(list_store)));
+	GtkTreeView *t = GTK_TREE_VIEW(gtk_tree_view_new_with_model(
+				GTK_TREE_MODEL(list_store)));
 	gtk_tree_view_set_headers_visible(t, FALSE);
 	gtk_tree_view_append_column(t, gtk_tree_view_column_new_with_attributes("",
 				gtk_cell_renderer_text_new(), "text", 0, NULL));
