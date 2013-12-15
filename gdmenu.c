@@ -138,7 +138,7 @@ gboolean on_entry_key_press_event(GtkEntry *entry, GdkEvent *event)
 	return FALSE;
 }
 
-void read_options(int *argc, char **argv[])
+void parse_options(int *argc, char **argv[])
 {
 	GOptionContext *oc = g_option_context_new(NULL);
 	g_option_context_add_main_entries(oc, option_entries, NULL);
@@ -147,21 +147,52 @@ void read_options(int *argc, char **argv[])
 	g_option_context_free(oc);
 }
 
-void read_resources(void)
+void build_interface(void)
 {
-	GtkBuilder *b = gtk_builder_new_from_resource("/org/gdmenu/gdmenu.ui");
-	gtk_builder_connect_signals(b, NULL);
+	GtkWindow *w;
+	GtkBox *b;
+	GtkTreeView *t;
 
-#define BUILDER(NAME) gtk_builder_get_object(b, NAME)
+	w = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
+	gtk_window_set_title(w, title);
+	gtk_window_set_gravity(w, GDK_GRAVITY_CENTER);
+	gtk_window_set_position(w, GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_window_set_type_hint(w, GDK_WINDOW_TYPE_HINT_DIALOG);
+	gtk_window_set_icon_name(w, "dialog-question");
 
-	GtkWindow *window = GTK_WINDOW(BUILDER("window"));
-	gtk_window_set_title(window, title);
+	b = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
 
-	entry = GTK_ENTRY(BUILDER("entry"));
-	list_store = GTK_LIST_STORE(BUILDER("liststore"));
-	tree_selection = GTK_TREE_SELECTION(BUILDER("treeview-selection"));
+	entry = GTK_ENTRY(gtk_entry_new());
+	gtk_widget_grab_focus(GTK_WIDGET(entry));
 
-	g_object_unref(G_OBJECT(b));
+	list_store = gtk_list_store_new(1, G_TYPE_STRING);
+
+	t = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(list_store)));
+	gtk_tree_view_set_headers_visible(t, FALSE);
+	gtk_tree_view_append_column(t, gtk_tree_view_column_new_with_attributes("",
+				gtk_cell_renderer_text_new(), "text", 0, NULL));
+
+	tree_selection = gtk_tree_view_get_selection(t);
+
+#define NO_FOCUS(W) gtk_widget_set_can_focus(GTK_WIDGET(W), FALSE) 
+
+	NO_FOCUS(w);
+	NO_FOCUS(b);
+	NO_FOCUS(t);
+
+#define BOX_APPEND(B, W, E, F) gtk_box_pack_start(b, GTK_WIDGET(W), E, F, 0)
+	
+	BOX_APPEND(b, entry, FALSE, TRUE);
+	BOX_APPEND(b, t, TRUE, TRUE);
+	gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(b));
+
+#define CONNECT(O, S, C) g_signal_connect(G_OBJECT(O), S, G_CALLBACK(C), NULL)
+
+	CONNECT(w, "destroy", gtk_main_quit);
+	CONNECT(entry, "changed", on_entry_changed);
+	CONNECT(entry, "key-press-event", on_entry_key_press_event);
+
+	gtk_widget_show_all(GTK_WIDGET(w));
 }
 
 void read_input(void)
@@ -181,11 +212,9 @@ void read_input(void)
 int main(int argc, char *argv[])
 {
 	gtk_init(&argc, &argv);
-
-	read_options(&argc, &argv);
-	read_resources();
+	parse_options(&argc, &argv);
+	build_interface();
 	read_input();
-
 	gtk_main();
 	return 0;
 }

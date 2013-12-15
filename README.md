@@ -6,7 +6,7 @@ GTK+ dmenu clone.
 Dependencies
 ------------
 
-* gtk+-3.0 gmodule-2.0
+* gtk+-3.0
 
 Options
 -------
@@ -28,5 +28,5 @@ Installation
 ------------
 
 ```
-make resources && make && sudo make install
+make && sudo make install
 ```
