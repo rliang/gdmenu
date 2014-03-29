@@ -1,21 +1,13 @@
-EXEC=gdmenu
-LIBS=gtk+-3.0
-CFLAGS=-std=c99 -Os -Wall -Wextra -pedantic -s -pipe
-EXECS=${EXEC} ${EXEC}_run ${EXEC}_history ${EXEC}_bookmarks
+TARGET  := gdmenu
+SCRIPTS := gdmenu_run
+CFLAGS  ?= -Os -pipe -march=native
+LDFLAGS ?= -s
+CFLAGS  += $(shell pkg-config --cflags gtk+-3.0)
+LDFLAGS += $(shell pkg-config --libs gtk+-3.0)
+PREFIX  ?= /usr/local
+DESTDIR ?= bin
 
+all: $(TARGET)
 
-CFLAGS+=`pkg-config --cflags --libs ${LIBS}`
-
-PREFIX?=/usr/local
-BINDIR?=${PREFIX}/bin
-
-
-.PHONY: clean install
-
-all: ${EXEC}
-
-clean:
-	rm ${EXEC}
-
-install: ${EXECS}
-	$(foreach i, ${EXECS}, install -Dm 755 ${i} ${DESTDIR}${BINDIR}/${i};)
+install: $(TARGET) $(SCRIPTS)
+	$(foreach I, $^, install -D $(I) $(PREFIX)/$(DESTDIR)/$(I);)
