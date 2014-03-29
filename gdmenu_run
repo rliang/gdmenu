@@ -1,10 +1,14 @@
 #!/bin/sh
 
-exec $(for p in $(echo $PATH | tr ':' ' ')
+cache=~/.cache/gdmenu_run
+
+for i in $(echo $PATH | tr ':' ' ')
 do
-	cd $p
-	for i in *
-	do
-		[ -x $i ] && echo $i
-	done
-done | gdmenu -t 'Choose an Application' -m 10 | tee -a ~/.cache/gdmenu_run)
+	if [ $i -nt $cache ]
+	then
+		echo $(sh -c "shopt -s nullglob; echo {$(echo $PATH | tr ':' ',')}/*") | tr ' ' '\n' > $cache
+		break
+	fi
+done
+
+exec $(gdmenu -t 'Choose an Application' -m 10 < $cache)

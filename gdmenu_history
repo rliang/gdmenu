@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec $(cat ~/.cache/gdmenu_run | sort -u | gdmenu -t 'History' -m 10)
