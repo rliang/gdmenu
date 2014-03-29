@@ -6,7 +6,8 @@ for i in $(echo $PATH | tr ':' ' ')
 do
 	if [ $i -nt $cache ]
 	then
-		echo $(sh -c "shopt -s nullglob; echo {$(echo $PATH | tr ':' ',')}/*") | tr ' ' '\n' > $cache
+		shopt -s nullglob
+		eval "echo {$(echo $PATH | tr ':' ',')}/*" | tr ' ' '\n' > $cache
 		break
 	fi
 done
