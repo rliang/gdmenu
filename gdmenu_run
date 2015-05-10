@@ -7,7 +7,7 @@ do
 	if [ $i -nt $cache ]
 	then
 		shopt -s nullglob
-		eval "echo {$(echo $PATH | tr ':' ',')}/*" | tr ' ' '\n' > $cache
+		eval "echo {$(echo $PATH | tr ':' ',')}/*" | tr ' ' '\n' | sort | uniq > $cache
 		break
 	fi
 done
