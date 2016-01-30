@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <libgen.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
@@ -100,12 +101,17 @@ void on_entry_changed(void)
 
 	gint count = 0;
 	GSList *i = input;
-	for (; i != NULL && count < max_entries; i = g_slist_next(i))
-		if (strstr(i->data, entry_text()) != NULL) {
+	for (; i != NULL && count < max_entries; i = g_slist_next(i)){
+		gpointer base= basename(i->data);
+		gpointer pos = strstr(base, entry_text());
+		gpointer pos_full = strstr(i->data, entry_text());
+		if ((pos_full != NULL && pos_full - i->data == 0)
+				|| pos != NULL && pos - base == 0){
 			gtk_list_store_insert_with_values(list_store, NULL, -1,
 					0, i->data, -1);
 			count += 1;
 		}
+	}
 
 	select_row(0);
 }
